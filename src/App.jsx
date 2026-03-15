@@ -3,7 +3,7 @@ import SearchBar from "./components/SearchBar";
 import Loader from "./components/Loader";
 import WeatherCard from "./components/WeatherCard";
 import CurrentDateTime from "./components/CurrentDateTime";
-import WeatherNews from "./components/weatherNews";
+import WeatherNews from "./components/WeatherNews";
 import "./App.css"
 
 const API_KEY = "be37f7b03fc238aaf8ad280a6addc066"
