@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const NEWS_API_KEY = "a062f9c0204344829ef9df858075adb2";
+const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 
 export default function WeatherNews({ city }) {
 
@@ -9,39 +9,53 @@ export default function WeatherNews({ city }) {
 
     useEffect(() => {
 
+        if (!city) return;
+
         const fetchNews = async () => {
 
             try {
+
                 setLoading(true);
 
                 const res = await fetch(
-                    `https://newsapi.org/v2/everything?q=weather+${city}&pageSize=5&apiKey=${NEWS_API_KEY}`
+                    `https://gnews.io/api/v4/search?q=${city}+weather+rain&lang=en&max=5&apikey=${NEWS_API_KEY}`
                 );
 
                 const data = await res.json();
 
-                if (data.articles) {
+                if (data?.articles?.length > 0) {
+
                     setNews(data.articles.slice(0, 5));
+
                 } else {
-                    setNews([]);
+
+                    const fallbackRes = await fetch(
+                        `https://gnews.io/api/v4/search?q=weather+storm+rain+forecast&lang=en&max=5&apikey=${NEWS_API_KEY}`
+                    );
+
+                    const fallbackData = await fallbackRes.json();
+
+                    if (fallbackData?.articles) {
+                        setNews(fallbackData.articles.slice(0, 5));
+                    }
+
                 }
 
             } catch (error) {
+
                 console.error(error);
-                setNews([]);
+
             } finally {
+
                 setLoading(false);
+
             }
 
         };
 
-        if (city) {
-            fetchNews();
-        }
+        fetchNews();
 
     }, [city]);
-
-
 
     return (
         <div className="weather-news">
@@ -50,9 +64,9 @@ export default function WeatherNews({ city }) {
 
             {loading && <p>Loading News...</p>}
 
-            {!loading && news.length === 0 && (
+           {!loading && city && news.length === 0 && (
                 <p className="no-news">
-                    No weather news available for this city.
+                    No weather news available.
                 </p>
             )}
 
@@ -64,7 +78,7 @@ export default function WeatherNews({ city }) {
 
                         <img
                             src={
-                                article.urlToImage ||
+                                article.image ||
                                 "https://via.placeholder.com/400x200?text=Weather+News"
                             }
                             alt="news"
@@ -72,7 +86,7 @@ export default function WeatherNews({ city }) {
 
                         <div className="news-content">
 
-                            <h3>{article.title || "Weather Update"}</h3>
+                            <h3>{article.title}</h3>
 
                             <p>
                                 {article.description || "Click below to read full article."}

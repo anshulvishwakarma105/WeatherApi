@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchBar from "./components/SearchBar";
 import Loader from "./components/Loader";
 import WeatherCard from "./components/WeatherCard";
@@ -6,12 +6,17 @@ import CurrentDateTime from "./components/CurrentDateTime";
 import WeatherNews from "./components/WeatherNews";
 import "./App.css"
 
-const API_KEY = "be37f7b03fc238aaf8ad280a6addc066"
+const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
 function App() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+
+  useEffect(() => {
+    fetchWeather("London");
+  }, []);
 
   const fetchWeather = async (city) => {
     try {
@@ -19,7 +24,7 @@ function App() {
       setError('');
 
       const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${API_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${WEATHER_API_KEY}`
       );
 
       if (!res.ok) {

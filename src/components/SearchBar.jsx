@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 export default function SearchBar({ onSearch }) {
-  const [city, setCity] = useState("london");
+  const [city, setCity] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!city.trim()) return;
