@@ -40,7 +40,7 @@ export default function WeatherCard({ weather }) {
           <WiHumidity size={40} />
           <p>{humidity}%</p>
           <span>Humidity</span>
-        </div>
+        </div> 
 
         <div className="detail-box">
           <WiStrongWind size={40} />
