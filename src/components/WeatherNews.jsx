@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-
 export default function WeatherNews({ city }) {
 
     const [news, setNews] = useState([]);
@@ -17,9 +15,7 @@ export default function WeatherNews({ city }) {
 
                 setLoading(true);
 
-                const res = await fetch(
-                    `https://gnews.io/api/v4/search?q=${city}+weather+rain&lang=en&max=5&apikey=${NEWS_API_KEY}`
-                );
+                const res = await fetch(`/api/news?city=${city}`);
 
                 const data = await res.json();
 
@@ -29,15 +25,11 @@ export default function WeatherNews({ city }) {
 
                 } else {
 
-                    const fallbackRes = await fetch(
-                        `https://gnews.io/api/v4/search?q=weather+storm+rain+forecast&lang=en&max=5&apikey=${NEWS_API_KEY}`
-                    );
+                    const fallbackRes = await fetch(`/api/news?city=weather`);
 
                     const fallbackData = await fallbackRes.json();
 
-                    if (fallbackData?.articles) {
-                        setNews(fallbackData.articles.slice(0, 5));
-                    }
+                    setNews(fallbackData.articles || []);
 
                 }
 
@@ -64,7 +56,7 @@ export default function WeatherNews({ city }) {
 
             {loading && <p>Loading News...</p>}
 
-           {!loading && city && news.length === 0 && (
+            {!loading && city && news.length === 0 && (
                 <p className="no-news">
                     No weather news available.
                 </p>
